@@ -2,6 +2,8 @@ import cv2
 import layoutparser as lp
 import numpy as np
 import pytesseract
+from com_ineuron_apparel.com_ineuron_utils.utils import encodeImageIntoBase64
+
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 class Detector:
     def __init__(self, filename):
@@ -25,7 +27,11 @@ class Detector:
         detected_image = lp.draw_box(image, layout_boxes, box_width=3, show_element_type= True)
 
         cv2.imwrite(self.output_filename, cv2.cvtColor(np.array(detected_image), cv2.COLOR_BGR2RGB))
-        return layout_boxes, detected_image
+        opencodedbase64 = encodeImageIntoBase64(self.output_filename)
+        #listOfOutput = []
+        result = {"image": opencodedbase64.decode('utf-8')}
+
+        return layout_boxes, result
     
     def extract_text(self):
         image = cv2.imread(self.filename)
